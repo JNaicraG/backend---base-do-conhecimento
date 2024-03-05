@@ -1,5 +1,9 @@
 const app = require('express')();
 const consign = require('consign');
+const db = require('./config/db');
+
+//O knex facilita a integração com o db
+app.db = db; //recebe o knex já configurado
 
 consign() //Ele lê os arquivos de config em separado para maior controle - primeiro os middlewares, depois as apis que serão usadas em rotas, e aí rotas
     .then('./config/middlewares.js') //Local do middlware
