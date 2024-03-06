@@ -44,13 +44,13 @@ module.exports = app => {
             app.db('users')
                 .update(user)
                 .where({id:user.id})
-                .then(_ => {res.status(204).send()} )
-                .catch(err => {res.status(500).send(err)} ); //204 = tudo certo
+                .then(_ => res.status(204).send() )
+                .catch(err => res.status(500).send(err) ); //204 = tudo certo
         } else {
             app.db('users')
                 .insert(user)
-                .then(_ => {res.status(204).send()})
-                .catch(err=>{res.status(500).send(err)});
+                .then(_ => res.status(204).send())
+                .catch(err=>res.status(500).send(err));
         }
 
     }
@@ -59,8 +59,24 @@ module.exports = app => {
         app.db('users')
             .select('id','name','email','admin')
             .then(users => res.json(users)) //Aqui seria onde poderíamos converter esse array em um array com os atributos modificados. Mudando o nome, por exemplo, de user_id para userId para uso no sistema, diferentemente do sql
-            .catch(err=>{res.status(500).send(err)});
+            .catch(err=>res.status(500).send(err));
     }
 
-    return { save,get };
+    const getById = (req,res) => {
+        try{
+            existsOrError(req.params.id, 'Id não identificado')
+        } catch(msg) {
+            return res.status(400).send(msg);
+        }
+
+        app.db('users')
+            .select('id','name','email','admin')
+            .where({id:req.params.id})
+            .first()
+            .then(user => res.json(user))
+            .catch(err=>res.status(500).send(err));
+
+            
+    }
+    return { save,get, getById };
 }
