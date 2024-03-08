@@ -102,9 +102,7 @@ module.exports = app => {
         const categoriesWithPath = categories.map(category =>{
             let path = category.name;
             let parent = getParent(categories,category.parentId);
-            console.log('Antes do while')
             while(parent){ //enquanto não for nulo
-                console.log('dentro do while')
                 path=`${parent.name} > ${path}`;
                 parent = getParent(categories,parent.parentId);
             }
@@ -121,6 +119,28 @@ module.exports = app => {
         return categoriesWithPath;
     }
     
+    //Transforma um array em árvore
+    const toTree = (categories,tree) =>{ //param tree será vazio na primeira chamada da função
+        //Monta o topo da árvore
+        
+        if(!tree) tree = categories.filter(c => !c.parentId) //Caso seja a primeira arvore, ser o primeiro elemento sem pais
 
-    return { save, get, getById, remove }
+                        //Pega o nó pai e encontra seus filhos
+        tree = tree.map(parentNode => {
+            const isChild = node => node.parentId == parentNode.id; //é o pai igual o pai do nó? ENtão é filho direto
+            //Recursivamente procura os filhos, passando como topo da nova árvore somente aqueles que forem filhos diretos
+            parentNode.children = toTree(categories, categories.filter(isChild));
+            return parentNode;
+        });
+        return tree;
+    }
+
+    //serviço que faz a transformação
+    const getTree = (req, res) =>{
+        app.db('categories')
+            .then(categories=>res.json(toTree(withPath(categories)))) //retorna com paths a árvore
+            //.catch(err=>res.status(500).send(err));
+    }
+
+    return { save, get, getById, remove, getTree }
 }
