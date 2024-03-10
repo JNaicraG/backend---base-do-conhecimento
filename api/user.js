@@ -75,8 +75,9 @@ module.exports = app => {
             .first()
             .then(user => res.json(user))
             .catch(err=>res.status(500).send(err));
-
-            
     }
+
+    
+
     return { save,get, getById };
 }
