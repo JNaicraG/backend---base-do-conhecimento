@@ -36,7 +36,9 @@ module.exports = app => {
 
     const remove = async (req, res) => {
         try {
-            existsOrError(req.params.id, 'ID não informado');
+            //Poderia ter validação para ver se é int
+            existsOrError(req.params.id, 'ID não informado'); //Se não tiver id já vai falhar na deleção, mas deixado independente
+            //Poderia haver uma validação de se é admin ou não
 
             const rowsDeleted = await app.db('articles')
                 .where({ id: req.params.id })
@@ -47,4 +49,36 @@ module.exports = app => {
             res.status(400).send(msg);
         }
     }
+
+
+    //Paginação
+    const limit = 10; //Limite de itens por página
+
+    const get = async (req, res) => {
+        //A página é esperado vir da query
+        const page = req.query.page || 1; //Se nada usar default
+
+        const result = await app.db('articles').count('id').first();
+        const count = parseInt(result.count);
+
+        app.db('articles')
+            .select('id', 'name', 'description')
+            .limit(limit).offset(page * limit - limit)
+            .then(articles => res.json({ data: articles, count, limit })) //O front precisa do contador atual e do limit
+            .catch(err => res.status(500).send(err));
+    }
+
+    const getById = (req, res) => {
+        app.db('articles')
+            .where({ id: req.params.id })
+            .first()
+            .then(article => {
+                article.content = article.content.toString(); //Está em binário
+                return res.json(article);
+            })
+            .catch(err => res.status(500).send(err));
+    }
+
+
+    return { get, getById, remove, save }
 }
