@@ -27,10 +27,13 @@ module.exports = app => {
 
     app.route('/articles')
         .get(app.api.article.get)
-        .post(app.api.article.save)
+        .post(app.api.article.save);
 
     app.route('/articles/:id')
         .put(app.api.article.save)
         .delete(app.api.article.remove)
-        .get(app.api.article.getById)
+        .get(app.api.article.getById);
+    
+    app.route('/categories/:id/articles')
+        .get(app.api.article.getByCategory);
 }

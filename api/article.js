@@ -1,3 +1,5 @@
+const queries = require('./queries');
+
 module.exports = app => {
     const { existsOrError, notExistsOrError } = app.api.validation;
 
@@ -83,6 +85,22 @@ module.exports = app => {
             .catch(err => res.status(500).send(err));
     }
 
+    const getByCategory = async (req, res) => {
+        const categoryId = req.params.id;
+        const page = req.query.page;
+        const categories = await app.db.raw(queries.categoryWithChildren, categoryId);
+        const ids = categories.rows.map(c=>c.id);
 
-    return { get, getById, remove, save }
+        app.db({a:'articles', u:'users'})
+            .select('a.id', 'a.name', 'a.description', 'a.imageUrl', {author: 'u.name'})
+            .limit(limit).offset(page*limit - limit)
+            .whereRaw('?? = ??', ['u.id','a.userId']) //onde u.id = a.userId
+            .whereIn('categoryId', ids) //Ex: select * from "categories" where id (1,2,3) - onde o id for alguma dessas opções/conjunto. Select * from articles where "categoryId" in (4,5,6,7,8) sendo o conjunto os id´s de categoriaswithchildren
+            .orderBy('a.id', 'desc') //ordernar dos mais novos pros mais antigos
+            .then(articles => res.json(articles))
+            .catch(err=> res.status(500).send(err));
+
+    }
+
+    return { get, getById, remove, save, getByCategory }
 }
