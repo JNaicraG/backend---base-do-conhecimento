@@ -43,7 +43,7 @@ module.exports = app => {
         try{
             if(userData){
                 const token = jwt.decode(userData.token, authSecret)
-                                    //transformar expiração do token de mili para nano para comparação
+                //transformar expiração do token de mili para nano para comparação
                 if(new Date(token.exp * 1000) > new Date()){
                     return res.send(true);
                     //poderia renovar o token aqui se a data estivesse perto ou outra coisa
@@ -52,7 +52,6 @@ module.exports = app => {
         } catch (e) {
             //problema com token - tipo expiração ou se gerado com authSecret diferente
             //Sim, a expiração ele já cairia aqui
-            console.log("OLHA O ERRO")
             res.send(false);
         }
     }
