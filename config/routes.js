@@ -3,6 +3,13 @@ module.exports = app => {
 
     //Colocar as urls mais específicas em cima e as mais genéricas (com parâmetros) embaixo
 
+
+    //Únicas urls que não estarão sujeitas a valdação do token - urls públicas. Disponíveis para qualquer pessoa acessar
+    app.post('/signup', app.api.user.save);
+    app.post('/signin', app.api.auth.signIn);
+    app.post('validateToken', app.api.auth.validateToken);
+
+
     app.route('/users') //Associar a endpoint com o arquivo
         .post(app.api.user.save) //app.pasta.arquivo.função
         .get(app.api.user.get);
