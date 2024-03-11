@@ -6,6 +6,7 @@ const db = require('./config/db');
 app.db = db; //recebe o knex já configurado
 
 consign() //Ele lê os arquivos de config em separado para maior controle - primeiro os middlewares, depois as apis que serão usadas em rotas, e aí rotas
+    .include('./config/passport.js') //agora tem o método a disposição e pode acessar a partir das rotas (ou qualquer outro)
     .then('./config/middlewares.js') //Local do middlware
     .then('./api/validation.js') //pois pode acabar carregando depois de userApi se não fizer
     .then('./api') //Lê todos os arquvios em api
