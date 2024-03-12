@@ -2,10 +2,13 @@ const app = require('express')();
 const consign = require('consign');
 const db = require('./config/db');
 
+const mongoose = require('mongoose');
+require('./config/mongodb'); //Somente chamando o arquivo já faz a conexão com o mongoose automaticamente
+
 //O knex facilita a integração com o db
 app.db = db; //recebe o knex já configurado
 
-
+app.mongoose = mongoose; //Agora ´epossível utilizar o mongo da mesma maneira que o postgres
 
 consign() //Ele lê os arquivos de config em separado para maior controle - primeiro os middlewares, depois as apis que serão usadas em rotas, e aí rotas
     .include('./config/passport.js') //agora tem o método a disposição e pode acessar a partir das rotas (ou qualquer outro) //usamos o include porque se trata de um carregamento de modelo. O then é destinado para controllers.
