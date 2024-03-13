@@ -1,0 +1,2 @@
+backend---base-do-conhecimento 
+Projeto realizado seguindo o curso de Web Moderno da cod3rs, construindo o backend duma aplicação web com ExpressJs integrado ao PostgreSQL e MongoDB como banco de dados. A aplicação tem por objetivo a criação e gerenciamento dum fórum para os alunos dos cursos da Cod3rs.
