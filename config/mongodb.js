@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');//Biblioteca odm (objeto-documento-mappin) 
                                                         //evitar geração de notificações de advertência, somente
 
-mongoose.connect('mongodb://localhost/knowledge_stats', {useNewUrlParser:true})
+mongoose.connect('mongodb://localhost:27017/knowledge_stats', {useNewUrlParser:true})
     .catch(e=>{ 
         //node console log colors
         const msg = 'ERRO! Não foi possível se conectar com o MongoDB';
