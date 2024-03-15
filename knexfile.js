@@ -1,7 +1,7 @@
 // Update with your config settings.
 //npx knex init para inicializar esse arquivo: https://stackoverflow.com/questions/50706399/node-js-knex-command-not-found
 
-
+const { db } = require('./.env');
 module.exports = {
 
   //development: { //Pode ter várias conexões diferentes - pra dev, prod, teste, etc
@@ -29,11 +29,7 @@ module.exports = {
 
   //production: { //Tirando essa chave agora estamos diretamente conectados ao banco pelo module.exports
     client: 'postgresql',
-    connection: {
-      database: 'knowledge',
-      user:     'postgres',
-      password: '4474'
-    },
+    connection: db,
     pool: {
       min: 2,
       max: 20

@@ -1,7 +1,8 @@
+const {mongodb} = require('../.env');
 const mongoose = require('mongoose');//Biblioteca odm (objeto-documento-mappin) 
                                                         //evitar geração de notificações de advertência, somente
 
-mongoose.connect('mongodb://localhost:27017/knowledge_stats', {useNewUrlParser:true})
+mongoose.connect(mongodb.host, {useNewUrlParser:true})
     .then(_=>console.log('MongoDB conectado!'))
     .catch(e=>{ 
         //node console log colors
