@@ -18,6 +18,10 @@ module.exports = app => {
         if (req.params.id) {
             user.id = req.params.id; //Conforme os params da requisição (url)
         }
+                        //se a url original for da endpoint /users
+        if(!req.originalUrl.startsWith('/users')) user.admin = false; 
+        //Se não houver usuário na requisição (não logado) ou a flag admin na req é falso 
+        if(!req.user || !req.user.admin) user.admin = false;
 
         try {
             //Poderia ser feita uma chamada só passando um array com os valores e mensagens
