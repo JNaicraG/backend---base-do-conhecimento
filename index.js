@@ -15,6 +15,7 @@ consign() //Ele lê os arquivos de config em separado para maior controle - prim
     .then('./config/middlewares.js') //Local do middlware
     .then('./api/validation.js') //pois pode acabar carregando depois de userApi se não fizer
     .then('./api') //Lê todos os arquvios em api
+    .then('./schedule')
     .then('./config/routes.js') 
     .into(app) //injeta em cada uma das dependecias carregadas o app
 
