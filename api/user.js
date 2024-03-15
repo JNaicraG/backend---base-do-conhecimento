@@ -44,6 +44,7 @@ module.exports = app => {
             app.db('users')
                 .update(user)
                 .where({ id: user.id })
+                .whereNull('deletedAt')
                 .then(_ => res.status(204).send())
                 .catch(err => res.status(500).send(err)); //204 = tudo certo
         } else {
@@ -58,6 +59,7 @@ module.exports = app => {
     const get = (req, res) => {
         app.db('users')
             .select('id', 'name', 'email', 'admin')
+            .whereNull('deletedAt')
             .then(users => res.json(users)) //Aqui seria onde poderíamos converter esse array em um array com os atributos modificados. Mudando o nome, por exemplo, de user_id para userId para uso no sistema, diferentemente do sql
             .catch(err => res.status(500).send(err));
     }
@@ -72,11 +74,30 @@ module.exports = app => {
         app.db('users')
             .select('id', 'name', 'email', 'admin')
             .where({ id: req.params.id })
+            .whereNull('deletedAt')
             .first()
             .then(user => res.json(user))
             .catch(err => res.status(500).send(err));
     }
 
+    //const remove = async (req, res) => {
+    //    try {
+    //        existsOrError(req.params.id, 'ID não informado');
+    //        const articles = await app.db('articles')
+    //            .where({ userId: req.params.id });
+    //        notExistsOrError(articles, 'Usuário possui artigos publicados')
+
+    //        const rowsDeleted = await app.db('users')
+    //            .where({ id: req.params.id })
+    //            .del();
+    //        existsOrError(rowsDeleted,'Usuário não foi encontrado');
+
+    //    } catch (msg) {
+    //        res.status(400).send(msg);
+    //    }
+    //}
+
+    //SoftDelete - vai precisar filtar essa nova coluna nas outras operações para ele não ser buscado
     const remove = async (req, res) => {
         try {
             existsOrError(req.params.id, 'ID não informado');
@@ -84,15 +105,16 @@ module.exports = app => {
                 .where({ userId: req.params.id });
             notExistsOrError(articles, 'Usuário possui artigos publicados')
 
-            const rowsDeleted = await app.db('users')
+            const rowsUpdated = await app.db('users')
+                .update({ deletedAt: new Date() })
                 .where({ id: req.params.id })
-                .del();
-            existsOrError(rowsDeleted,'Usuário não foi encontrado');
-            
+            existsOrError(rowsUpdated, 'Usuário não foi encontrado');
+            res.status(204).send();
         } catch (msg) {
             res.status(400).send(msg);
         }
     }
 
-    return { save, get, getById };
+
+    return { save, get, getById, remove };
 }
